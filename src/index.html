@@ -1,0 +1,61 @@
+<html>
+
+<head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form id="chat">
+
+
+        <div id="messages"></div>
+    
+    </form>
+
+    <script type="text/javascript">
+    const socket = io("http://localhost:3000");
+
+    function renderMessage(message){
+
+        //<div class="alert alert-danger" role="alert">This is a danger alert—check it out!</div>
+         $('#messages').append('<div class="alert alert-danger" role="alert">' + message.author + ' Messagem:  '+ message.message + ' </div>')
+    }
+
+socket.on('receivedMessage', function(message){
+    renderMessage(message);
+})
+
+
+    $("#chat").submit(function(event){
+        event.preventDefault();
+
+        var author = $('input[name=authorname]').val();
+        var message = $('input[name=allmessage]').val();
+
+        if(author.length && message.length){
+
+            var messageObjc = {
+             author: author,
+             message: message
+
+            };
+            
+             renderMessage(messageObjc);
+
+            socket.emit('sendMessage', messageObjc);
+        
+        }
+
+    });
+
+
+    </script>
+
+</body>
+
+</html>
